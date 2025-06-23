@@ -1,2 +1,0 @@
-/usr/bin/ar qc libumrt_imu_interface.a CMakeFiles/umrt_imu_interface.dir/src/imu.cpp.o
-/usr/bin/ranlib libumrt_imu_interface.a

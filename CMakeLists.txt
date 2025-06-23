@@ -56,13 +56,14 @@ target_link_libraries(${PROJECT_NAME}
         )
 
 set(public_headers
-        include/umrt_imu_interface/imu.hpp
+        include/umrt_imu_interface/imu.h
+        include/umrt_imu_interface/register_map.h
         )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${public_headers}")
 
-# ********** Setup encoder_dump executable **********
+# ********** Setup imu_dump executable **********
 
 set(imu_dump_target imu_dump)
 set(imu_dump_sources
@@ -105,3 +106,4 @@ install(TARGETS ${imu_dump_target}
 
 message(STATUS "Components to pack: ${CPACK_COMPONENTS_ALL}")
 include(cpack.cmake)
+

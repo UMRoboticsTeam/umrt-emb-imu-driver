@@ -85,7 +85,7 @@ int16_t Imu_Interface::read_16_bit_reg(const uint8_t& reg_l, const int& fd) {
          BOOST_LOG_TRIVIAL(error) << "[x] i2c file not found, using fd:"<<fd; 
          throw runtime_error("[x] i2c file not found, using fd:"); 
     }
-    int retries{3};
+    size_t retries{3};
     uint8_t val[2]; 
     for(size_t i{}; i< retries; i++) {   //retry i2c read n times then report fail 
         i2c_smbus_read_i2c_block_data(fd,reg_l,2,val); 

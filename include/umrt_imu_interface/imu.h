@@ -9,20 +9,14 @@
 #ifndef IMU_H
 #define IMU_H
 
-#include <iostream>
-extern "C" {
-    #include <linux/i2c-dev.h>
-    #include <i2c/smbus.h>
-}
-#include <unistd.h>
-#include <thread> 
-#include <chrono>
-#include <sys/ioctl.h> 
-#include <fcntl.h>
-#include "register_map.h"
-#include <cerrno>
-#include <boost/log/trivial.hpp>
 
+#include <iostream>
+#include <array> 
+#include "register_map.h"
+#include <cstdint> 
+#include <chrono>
+#include <cstring>
+#include <thread>
 
 
 class Imu_Interface {

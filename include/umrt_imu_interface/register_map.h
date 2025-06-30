@@ -8,6 +8,7 @@
 #ifndef REGISTER_MAP_H
 #define REGISTER_MAP_H 
 
+#include <cstdint> 
 //sensor registers 
 constexpr uint8_t LIN_ACC_X_REG_H = 0x29; 
 constexpr uint8_t LIN_ACC_X_REG_L = 0x28; 

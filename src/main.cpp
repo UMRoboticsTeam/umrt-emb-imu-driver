@@ -1,4 +1,9 @@
-#include "../include/umrt_imu_interface/imu.h"
+#include "imu.h"
+#include <cstdint> 
+#include <chrono>
+#include <cstring>
+#include <thread>
+#include <boost/log/trivial.hpp>
 
 
 void gyr_xyz_handler(std::array<int16_t, 3> gyr_xyz_raw) {
@@ -37,6 +42,9 @@ int main(int argc, char* argv[]) {
     uint8_t slave_addr = 0x28; 
     if (argc > 1) {
         address = argv[1]; 
+        if(argc>2){
+            slave_addr = strtol(argv[2], NULL, 16); 
+            }
     }
 
     Imu_Interface imu_interface(address,slave_addr); 

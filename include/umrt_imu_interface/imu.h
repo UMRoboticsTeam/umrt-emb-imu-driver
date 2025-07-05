@@ -18,7 +18,9 @@
 #include <cstring>
 #include <thread>
 
-
+/**
+ * Manages communication with the Adafruit BN0O5 IMU connected over I2C to the SBC.
+ */
 class Imu_Interface {
 private:
     int fd{-1};
@@ -36,7 +38,7 @@ private:
 
 
 public:
-    Imu_Interface() = default;  
+    Imu_Interface() = delete;  
       /**
      * Initializes IMU, and begins calibration and device configuration checks
      * @param file_addr file address for the i2c i/o device . 

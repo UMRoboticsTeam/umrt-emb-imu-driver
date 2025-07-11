@@ -106,7 +106,7 @@ install(FILES
         )
 
 install(
-        TARGETS ${lib_target} # These targets will be packaged
+        TARGETS ${lib_target} {imu_dump_target} # These targets will be packaged
         EXPORT ${PROJECT_NAME}Targets
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
 )

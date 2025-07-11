@@ -12,7 +12,6 @@
 
 #include <iostream>
 #include <array> 
-#include "register_map.h"
 #include <cstdint> 
 #include <chrono>
 #include <cstring>

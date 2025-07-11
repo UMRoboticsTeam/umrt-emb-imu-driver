@@ -1,7 +1,6 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.22.1)
 project(umrt_imu_interface)
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 
 # ********** Setup CMake **********
 
@@ -35,74 +34,88 @@ endif()
 
 # ********** Setup umrt_imu_interface_lib library **********
 
-set(umrt_imu_interface_sources
-        src/imu.cpp
-        )
-set_source_files_properties(
-        ${umrt_imu_interface_sources}
-        PROPERTIES language "CXX")
-add_library(
-        ${PROJECT_NAME}
-        ${umrt_imu_interface_sources})
+set(lib_target ${PROJECT_NAME}) 
+
+add_library(${lib_target})
+
+target_sources(${lib_target} PRIVATE 
+        src/imu.cpp 
+        src/main.cpp
+) 
+
+set(public_headers 
+    include/umrt_imu_interface/imu.hpp
+) 
+
+set_property(TARGET ${lib_target} PROPERTY PUBLIC_HEADER ${public_headers}) 
+
+
 target_include_directories(${PROJECT_NAME} PUBLIC
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}>"
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}>"
         "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
 
-
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(${PROJECT_NAME} PRIVATE
         ${Boost_LIBRARIES}
         ${I2C_LIBRARY}
-        )
+)
 
 set(public_headers
         include/umrt_imu_interface/imu.h
 
         )
-
-set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${public_headers}")
-
 # ********** Setup imu_dump executable **********
 
 set(imu_dump_target imu_dump)
-set(imu_dump_sources
-        src/main.cpp
-        src/imu.cpp
-        )
-set_source_files_properties(
-        ${imu_dump_sources}
-        PROPERTIES language "CXX")
-add_executable(
-        ${imu_dump_target}
-        ${imu_dump_sources})
-target_include_directories(${imu_dump_target} PUBLIC
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>"
-        "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
 
-target_link_libraries(${imu_dump_target}
-        ${PROJECT_NAME}
-        )
+add_executable(${imu_dump_target})
 
-set_target_properties(${imu_dump_target} PROPERTIES LINKER_LANGUAGE CXX)
+target_sources(${imu_dump_target} PRIVATE src/imu.cpp src/main.cpp)
+
+target_link_libraries(${imu_dump_target} PRIVATE  
+        ${Boost_LIBRARIES}
+        ${I2C_LIBRARY}
+    )
+
 
 # ********** Setup packaging **********
-
 include(GNUInstallDirs)
-install(TARGETS ${PROJECT_NAME}
-        EXPORT "${PROJECT_NAME}Targets"
-        COMPONENT ${PROJECT_NAME}
-        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
-        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+include(CMakePackageConfigHelpers)
+
+# Parse version number from the file
+file(READ "version" version_input)
+string(REGEX MATCH "([0-9]+)\.([0-9]+)\.([0-9]+)" _ ${version_input})
+
+# Fill in cmake variables in config template
+configure_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/config.in.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+        @ONLY
+)
+
+write_basic_package_version_file(
+        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+        VERSION ${version_input}
+        COMPATIBILITY AnyNewerVersion
+)
+
+install(FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}
         )
 
-install(TARGETS ${imu_dump_target}
-        EXPORT "${imu_dump_target}Targets"
-        COMPONENT ${imu_dump_target}
+install(
+        TARGETS ${lib_target} # These targets will be packaged
+        EXPORT ${PROJECT_NAME}Targets
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
-        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-        )
+)
+
+install(
+        EXPORT ${PROJECT_NAME}Targets
+        NAMESPACE ${PROJECT_NAME}::
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}
+)
 
 message(STATUS "Components to pack: ${CPACK_COMPONENTS_ALL}")
 include(cpack.cmake)

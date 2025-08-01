@@ -40,11 +40,10 @@ add_library(${lib_target})
 
 target_sources(${lib_target} PRIVATE 
         src/imu.cpp 
-        src/main.cpp
 ) 
 
 set(public_headers 
-    include/umrt_imu_interface/imu.hpp
+    include/umrt_imu_interface/imu.h
 ) 
 
 set_property(TARGET ${lib_target} PROPERTY PUBLIC_HEADER ${public_headers}) 
@@ -67,7 +66,6 @@ set(public_headers
 # ********** Setup imu_dump executable **********
 
 set(imu_dump_target imu_dump)
-
 add_executable(${imu_dump_target})
 
 target_sources(${imu_dump_target} PRIVATE src/imu.cpp src/main.cpp)
@@ -76,6 +74,11 @@ target_link_libraries(${imu_dump_target} PRIVATE
         ${Boost_LIBRARIES}
         ${I2C_LIBRARY}
     )
+
+target_include_directories(${imu_dump_target} PUBLIC
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}>"
+        "$<INSTALL_INTERFACE:include/>")
 
 
 # ********** Setup packaging **********
@@ -106,7 +109,7 @@ install(FILES
         )
 
 install(
-        TARGETS ${lib_target} {imu_dump_target} # These targets will be packaged
+        TARGETS ${lib_target} ${imu_dump_target} # These targets will be packaged
         EXPORT ${PROJECT_NAME}Targets
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
 )

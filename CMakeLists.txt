@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22.1)
-project(umrt_imu_interface)
+project(umrt-imu-interface)
 
 
 # ********** Setup CMake **********
@@ -43,7 +43,7 @@ target_sources(${lib_target} PRIVATE
 ) 
 
 set(public_headers 
-    include/umrt_imu_interface/imu.h
+    include/umrt-imu-interface/imu.h
 ) 
 
 set_property(TARGET ${lib_target} PROPERTY PUBLIC_HEADER ${public_headers}) 
@@ -60,7 +60,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 )
 
 set(public_headers
-        include/umrt_imu_interface/imu.h
+        include/umrt-imu-interface/imu.h
 
         )
 # ********** Setup imu_dump executable **********

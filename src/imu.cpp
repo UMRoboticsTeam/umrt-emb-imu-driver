@@ -12,7 +12,7 @@
 #include <fcntl.h>
 #include <stdexcept> 
 #include <sys/ioctl.h>
-
+#include "register_map.h"
 extern "C" {
     #include <linux/i2c-dev.h>
     #include <i2c/smbus.h>

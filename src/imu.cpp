@@ -77,7 +77,9 @@ bool Imu_Interface::check_calibration() {
     uint8_t acc_cal = (calib_status >> 2) & 0x03;
     uint8_t mag_cal = calib_status & 0x03;
     BOOST_LOG_TRIVIAL(info) << "Calibration: Sys=" << (int)sys_cal << ", Gyr=" << (int)gyr_cal << ", Acc=" << (int)acc_cal << ", Mag=" << (int)mag_cal;
-    return (acc_cal == 3 && gyr_cal == 3 && mag_cal == 3); // Require full calibration
+    bool fully_calibratted = acc_cal == 3 && gyr_cal == 3 && mag_cal == 3; // Require full calibration
+    bool only_gyr_acc_calibrated = acc_cal == 3 && gyr_cal == 3; //Require only gyroscope and accelerometer to be calibrated
+    return (only_gyr_acc_calibrated); 
 }
 
 int16_t Imu_Interface::read_16_bit_reg(const uint8_t& reg_l, const int& fd) {
